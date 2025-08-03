@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todoapp_new/presentation/home/priority_button.dart';
+import 'package:todoapp_new/presentation/home/task_card.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -24,44 +25,48 @@ class HomeScreen extends StatelessWidget {
         elevation: 20,
       ),
       body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.only(left: 16.0, top: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Selamat Pagi, $user",
-                    style: TextTheme.of(context).displayLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: MyColors.foreground
-                    ),
-                  ),
-                  SizedBox(height: 8,),
-                  Text(
-                    "Apa aja aktivitasmu hari ini?",
-                    style: TextTheme.of(context).titleLarge?.copyWith(
-                      color: MyColors.foreground
-                    ),
-                  ),
-                  SizedBox(height: 32,),
-                  Text(
-                    'Semua Tugas',
-                    style: TextTheme.of(context).displayMedium,
-                  ),
-                  SizedBox(height: 8,),
-                  const PriorityButton(),
-                  SizedBox(height: 20,),
-                  // TODO: Display all tasks from DB here
-                  Column(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 24.0,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                  )
-                ],
-              )
-            ],
-          ),
+                    children: [
+                      Text(
+                        "Selamat Pagi, $user",
+                        style: TextTheme.of(context).displayLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: MyColors.foreground
+                        ),
+                      ),
+                      SizedBox(height: 8,),
+                      Text(
+                        "Apa aja aktivitasmu hari ini?",
+                        style: TextTheme.of(context).titleLarge?.copyWith(
+                            color: MyColors.foreground
+                        ),
+                      ),
+                      SizedBox(height: 32,),
+                      Text(
+                        'Semua Tugas',
+                        style: TextTheme.of(context).displayMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8,),
+                const PriorityButton(),
+                SizedBox(height: 20,),
+                // TODO: Display all tasks from DB here
+                const TaskCard()
+              ],
+            )
+          ],
         ),
       ),
     );

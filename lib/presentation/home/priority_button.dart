@@ -15,36 +15,42 @@ class _PriorityButtonState extends State<PriorityButton> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Wrap(
-        spacing: 12.0,
-        children: List.generate(4, (int index) {
-          final label = ["Semua", "Tinggi", "Sedang", "Rendah"];
-          final colors = [
-            MyColors.foreground,
-            MyColors.highPriority,
-            MyColors.mediumPriority,
-            MyColors.lowPriority,
-          ];
+      child: Row(
+        children: [
+          SizedBox(width: 16,),
+          Wrap(
+            spacing: 12.0,
+            children: List.generate(4, (int index) {
+              final label = ["Semua", "Tinggi", "Sedang", "Rendah"];
+              final colors = [
+                MyColors.foreground,
+                MyColors.highPriority,
+                MyColors.mediumPriority,
+                MyColors.lowPriority,
+              ];
 
-          return ChoiceChip(
-            padding: EdgeInsets.symmetric(horizontal: 24 ,vertical: 6),
-            label: Text(label[index], style: TextTheme.of(context).labelLarge?.copyWith(
-              color: MyColors.background,
-              fontWeight: FontWeight.w700
-            ),),
-            selectedColor: colors[index],
-            selected: _val == index,
-            backgroundColor: colors[index].withAlpha(100),
-            showCheckmark: false,
-            side: BorderSide.none,
-            onSelected: (bool selected) {
-              setState(() {
-                // TODO: get every tasks from its priority filter
-                _val = selected ? index : null;
-              });
-            },
-          );
-        }).toList(),
+              return ChoiceChip(
+                padding: EdgeInsets.symmetric(horizontal: 24 ,vertical: 6),
+                label: Text(label[index], style: TextTheme.of(context).labelLarge?.copyWith(
+                    color: MyColors.background,
+                    fontWeight: FontWeight.w700
+                ),),
+                selectedColor: colors[index],
+                selected: _val == index,
+                backgroundColor: colors[index].withAlpha(100),
+                showCheckmark: false,
+                side: BorderSide.none,
+                onSelected: (bool selected) {
+                  setState(() {
+                    // TODO: get every tasks from its priority filter
+                    _val = selected ? index : null;
+                  });
+                },
+              );
+            }).toList(),
+          ),
+          SizedBox(width: 16,),
+        ],
       ),
     );
   }
