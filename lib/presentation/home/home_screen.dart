@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todoapp_new/presentation/home/priority_button.dart';
 import 'package:todoapp_new/presentation/home/task_card.dart';
+import 'package:todoapp_new/presentation/home/task_form.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -8,7 +9,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var user = "Pengguna";
 
     return Scaffold(
@@ -19,16 +19,33 @@ class HomeScreen extends StatelessWidget {
           "Todo App",
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
             color: MyColors.background,
-            fontWeight: FontWeight.w700
+            fontWeight: FontWeight.w700,
           ),
         ),
         elevation: 20,
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: MyColors.foreground,
+        tooltip: 'add',
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+        child: const Icon(Icons.add, color: MyColors.background, size: 28),
+        onPressed: () {
+          showModalBottomSheet(
+            showDragHandle: true,
+            enableDrag: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+            ),
+            context: context,
+            builder: (BuildContext context) => TaskForm(),
+          );
+        },
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 24.0,),
+            SizedBox(height: 24.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -40,18 +57,18 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         "Selamat Pagi, $user",
                         style: TextTheme.of(context).displayLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: MyColors.foreground
+                          fontWeight: FontWeight.w700,
+                          color: MyColors.foreground,
                         ),
                       ),
-                      SizedBox(height: 8,),
+                      SizedBox(height: 8),
                       Text(
                         "Apa aja aktivitasmu hari ini?",
-                        style: TextTheme.of(context).titleLarge?.copyWith(
-                            color: MyColors.foreground
-                        ),
+                        style: TextTheme.of(
+                          context,
+                        ).titleLarge?.copyWith(color: MyColors.foreground),
                       ),
-                      SizedBox(height: 32,),
+                      SizedBox(height: 32),
                       Text(
                         'Semua Tugas',
                         style: TextTheme.of(context).displayMedium,
@@ -59,13 +76,13 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 8,),
+                SizedBox(height: 8),
                 const PriorityButton(),
-                SizedBox(height: 20,),
+                SizedBox(height: 20),
                 // TODO: Display all tasks from DB here
-                const TaskCard()
+                const TaskCard(),
               ],
-            )
+            ),
           ],
         ),
       ),

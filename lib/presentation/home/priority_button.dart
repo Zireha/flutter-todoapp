@@ -30,8 +30,8 @@ class _PriorityButtonState extends State<PriorityButton> {
               ];
 
               return ChoiceChip(
-                padding: EdgeInsets.symmetric(horizontal: 24 ,vertical: 6),
-                label: Text(label[index], style: TextTheme.of(context).labelLarge?.copyWith(
+                padding: EdgeInsets.symmetric(horizontal: 16 ,vertical: 8),
+                label: Text(label[index], style: TextTheme.of(context).bodySmall?.copyWith(
                     color: MyColors.background,
                     fontWeight: FontWeight.w700
                 ),),

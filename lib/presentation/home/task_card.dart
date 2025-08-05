@@ -75,10 +75,21 @@ class _TaskCardState extends State<TaskCard> {
             ),
             Checkbox(
               value: val,
-
+              fillColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+                if (states.contains(WidgetState.selected)) {
+                  return MyColors.foreground.withAlpha(100);
+                }
+                return MyColors.background;
+              }),
+              side: WidgetStateBorderSide.resolveWith(
+                  (Set<WidgetState> states) {
+                    return BorderSide.none;
+                  }
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4.0),
               ),
+              activeColor: MyColors.foreground,
               onChanged: (bool? newVal) {
                 setState(() {
                   val = newVal;
