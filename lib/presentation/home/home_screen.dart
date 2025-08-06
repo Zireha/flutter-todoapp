@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp_new/presentation/detail/task_detail.dart';
 import 'package:todoapp_new/presentation/home/priority_button.dart';
 import 'package:todoapp_new/presentation/home/task_card.dart';
-import 'package:todoapp_new/presentation/home/task_form.dart';
+import 'package:todoapp_new/presentation/add/task_form.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -33,6 +34,8 @@ class HomeScreen extends StatelessWidget {
           showModalBottomSheet(
             showDragHandle: true,
             enableDrag: true,
+            isDismissible: true,
+            isScrollControlled: true,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20))
             ),
@@ -80,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                 const PriorityButton(),
                 SizedBox(height: 20),
                 // TODO: Display all tasks from DB here
-                const TaskCard(),
+
               ],
             ),
           ],
