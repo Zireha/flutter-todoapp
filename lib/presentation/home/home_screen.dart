@@ -1,12 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:todoapp_new/presentation/detail/task_detail.dart';
+import 'package:todoapp_new/data/db_helper.dart';
 import 'package:todoapp_new/presentation/home/priority_button.dart';
 import 'package:todoapp_new/presentation/home/task_card.dart';
 import 'package:todoapp_new/presentation/add/task_form.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../../data/model/task_model.dart';
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  List<Task> _task = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTasks();
+  }
+
+  Future<void> _fetchTasks() async {
+    final taskMaps = await DBHelper.instance.queryAllTask();
+    setState(() {
+      //ganti nanti pake provider aja xixi
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +106,7 @@ class HomeScreen extends StatelessWidget {
                 const PriorityButton(),
                 SizedBox(height: 20),
                 // TODO: Display all tasks from DB here
-
+                TaskCard()
               ],
             ),
           ],

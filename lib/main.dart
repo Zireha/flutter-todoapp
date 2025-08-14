@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp_new/data/db_helper.dart';
 import 'package:todoapp_new/presentation/home/home_screen.dart';
 import 'package:todoapp_new/styles/theme/app_theme.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await DBHelper.instance.initDb();
+  await DBHelper.instance.inititializeTask();
+
   runApp(const MyApp());
 }
 
