@@ -7,7 +7,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await DBHelper.instance.initDb();
-  await DBHelper.instance.inititializeTask();
+  await DBHelper.instance.initializeTask();
 
   runApp(const MyApp());
 }

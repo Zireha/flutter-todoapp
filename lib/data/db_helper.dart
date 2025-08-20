@@ -5,7 +5,7 @@ import 'model/task_model.dart';
 class DBHelper {
   static final DBHelper instance = DBHelper._instance();
   static Database? _database;
-
+  static String tableName = "task";
   DBHelper._instance();
 
   Future<Database> get db async {
@@ -16,7 +16,6 @@ class DBHelper {
   Future<Database> initDb() async {
     String dbPath = await getDatabasesPath();
     String path = join(dbPath, "todo.db");
-
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
@@ -35,26 +34,33 @@ class DBHelper {
 
   Future<int> insertTask(Task task) async {
     Database db = await instance.db;
-    return await db.insert("task", task.toMap());
+    return await db.insert(tableName, task.toMap());
   }
 
   Future<List<Map<String, dynamic>>> queryAllTask() async {
     Database db = await instance.db;
-    return await db.query("task");
+    return await db.query(tableName);
   }
 
-  Future<int> updateTask(Task task) async {
+  Future<Task> getTaskById(int id) async {
+    final db = await instance.db;
+    final result = await db.query(tableName, where: "id = ?", whereArgs: [id], limit: 1);
+
+    return result.map((result)=>Task.fromMap(result)).first;
+  }
+
+  Future<int> updateTask(int id, Task task) async {
     Database db = await instance.db;
     return await db.update(
-        "task", task.toMap(), where: "id = ?", whereArgs: [task.id]);
+        tableName, task.toMap(), where: "id = ?", whereArgs: [task.id]);
   }
 
   Future<int> removeTask(int id) async {
     Database db = await instance.db;
-    return await db.delete("task", where: "id = ?", whereArgs: [id]);
+    return await db.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 
-  Future<void> inititializeTask() async {
+  Future<void> initializeTask() async {
     List<Task> taskToAdd = [
       Task(taskTitle: "Jogging",
           taskDescription: "Jalan jalan doang, mau kasih desc apalagi emang?",
