@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todoapp_new/data/db_helper.dart';
 import 'package:todoapp_new/presentation/home/home_screen.dart';
+import 'package:todoapp_new/provider/data/local_db_provider.dart';
 import 'package:todoapp_new/styles/theme/app_theme.dart';
 
 void main() async {
 
+  DBHelper dbHelper = DBHelper();
   WidgetsFlutterBinding.ensureInitialized();
-  await DBHelper.instance.initDb();
-  await DBHelper.instance.initializeTask();
+  await dbHelper.initDb();
+  await dbHelper.initializeTask();
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider<DBHelper>(create: (context) => DBHelper()),
+        ChangeNotifierProvider(
+          create: (context) => LocalDBProvider(context.read<DBHelper>()),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

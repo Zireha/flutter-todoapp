@@ -3,10 +3,8 @@ import 'package:path/path.dart';
 import 'model/task_model.dart';
 
 class DBHelper {
-  static final DBHelper instance = DBHelper._instance();
   static Database? _database;
   static String tableName = "task";
-  DBHelper._instance();
 
   Future<Database> get db async {
     _database ??= await initDb();
@@ -22,41 +20,44 @@ class DBHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
     CREATE TABLE task (
-    id INTEGER PRIMARY KEY,
-    task_title TEXT,
-    task_desc TEXT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    taskTitle TEXT,
+    taskDescription TEXT,
     time TEXT,
     date TEXT,
-    priority INTEGER
+    taskPriority INTEGER
     )
     ''');
   }
 
   Future<int> insertTask(Task task) async {
-    Database db = await instance.db;
+
+    final db = await initDb();
     return await db.insert(tableName, task.toMap());
   }
 
-  Future<List<Map<String, dynamic>>> queryAllTask() async {
-    Database db = await instance.db;
-    return await db.query(tableName);
+  Future<List<Task>> queryAllTask() async {
+    final db = await initDb();
+    final result = await db.query(tableName, orderBy: "id");
+    
+    return result.map((result) => Task.fromMap(result)).toList();
   }
 
   Future<Task> getTaskById(int id) async {
-    final db = await instance.db;
+    final db = await initDb();
     final result = await db.query(tableName, where: "id = ?", whereArgs: [id], limit: 1);
 
     return result.map((result)=>Task.fromMap(result)).first;
   }
 
   Future<int> updateTask(int id, Task task) async {
-    Database db = await instance.db;
+    final db = await initDb();
     return await db.update(
         tableName, task.toMap(), where: "id = ?", whereArgs: [task.id]);
   }
 
   Future<int> removeTask(int id) async {
-    Database db = await instance.db;
+    final db = await initDb();
     return await db.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 
@@ -72,7 +73,7 @@ class DBHelper {
           date: "26/04/2026",
           time: "19.00",
           taskPriority: 2),
-      Task(taskTitle: "Jogging",
+      Task(taskTitle: "Ke SC",
           taskDescription: "Ngurus berkas buat motor",
           date: "12/04/2026",
           time: "09.00",

@@ -1,18 +1,17 @@
 class Task {
   final int? id;
-  final String? taskTitle;
-  final String? taskDescription;
-  final String? time;
-  final String? date;
-  final int? taskPriority;
+  final String taskTitle;
+  final String taskDescription;
+  final String time;
+  final String date;
+  final int taskPriority;
 
   Task({
-    this.id, this.taskTitle, this.taskDescription, this.time, this.date, this.taskPriority
+    this.id, required this.taskTitle, required this.taskDescription, required this.time, required this.date, required this.taskPriority
   });
 
   Map<String, dynamic> toMap() {
-    return {
-      "id" : id,
+    return <String, dynamic>{
       "taskTitle" : taskTitle,
       "taskDescription" : taskDescription,
       "time" : time,
@@ -23,7 +22,6 @@ class Task {
 
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
-      id : map["id"],
       taskTitle: map["taskTitle"],
       taskDescription: map["taskDescription"],
       time: map["time"],

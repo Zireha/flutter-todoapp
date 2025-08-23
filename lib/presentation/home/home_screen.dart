@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:todoapp_new/data/db_helper.dart';
+import 'package:provider/provider.dart';
 import 'package:todoapp_new/presentation/home/priority_button.dart';
 import 'package:todoapp_new/presentation/home/task_card.dart';
 import 'package:todoapp_new/presentation/add/task_form.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
-import '../../data/model/task_model.dart';
+import '../../provider/data/local_db_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,25 +15,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  List<Task> _task = [];
-
   @override
   void initState() {
     super.initState();
-    _fetchTasks();
-  }
 
-  Future<void> _fetchTasks() async {
-    final taskMaps = await DBHelper.instance.queryAllTask();
-    setState(() {
-      //ganti nanti pake provider aja xixi
+    Future.microtask(() {
+      context.read<LocalDBProvider>().loadAllTasks();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var user = "Pengguna";
+    const user = "Pengguna";
 
     return Scaffold(
       backgroundColor: MyColors.background,
@@ -59,58 +52,65 @@ class _HomeScreenState extends State<HomeScreen> {
             enableDrag: true,
             isDismissible: true,
             isScrollControlled: true,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             context: context,
             builder: (BuildContext context) => TaskForm(),
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 24.0),
-            Column(
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 24.0),
+        children: [
+          // Header
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Selamat Pagi, $user",
-                        style: TextTheme.of(context).displayLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: MyColors.foreground,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Apa aja aktivitasmu hari ini?",
-                        style: TextTheme.of(
-                          context,
-                        ).titleLarge?.copyWith(color: MyColors.foreground),
-                      ),
-                      SizedBox(height: 32),
-                      Text(
-                        'Semua Tugas',
-                        style: TextTheme.of(context).displayMedium,
-                      ),
-                    ],
+                Text(
+                  "Selamat Pagi, $user",
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: MyColors.foreground,
                   ),
                 ),
-                SizedBox(height: 8),
-                const PriorityButton(),
-                SizedBox(height: 20),
-                // TODO: Display all tasks from DB here
-                TaskCard()
+                const SizedBox(height: 8),
+                Text(
+                  "Apa aja aktivitasmu hari ini?",
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: MyColors.foreground,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  'Semua Tugas',
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+
+          const SizedBox(height: 8),
+          const PriorityButton(),
+          const SizedBox(height: 20),
+
+          // Task list
+          Consumer<LocalDBProvider>(
+            builder: (context, value, child) {
+              final tasks = value.taskList;
+
+              if (tasks == null) {
+                return const Center(child: Text("Tidak ada tugas"));
+              }
+
+              return Column(
+                children: tasks.map((task) => TaskCard(task: task)).toList(),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

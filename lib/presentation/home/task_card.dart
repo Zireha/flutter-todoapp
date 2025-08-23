@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todoapp_new/provider/data/local_db_provider.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
-class TaskCard extends StatefulWidget {
+import '../../data/model/task_model.dart';
 
-  const TaskCard({super.key});
+class TaskCard extends StatefulWidget {
+  final Task task;
+
+  const TaskCard({super.key, required this.task});
 
   @override
   State<TaskCard> createState() => _TaskCardState();
@@ -14,6 +19,9 @@ class _TaskCardState extends State<TaskCard> {
 
   @override
   Widget build(BuildContext context) {
+
+    final item = widget.task;
+
     return GestureDetector(
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16.0),
@@ -31,7 +39,7 @@ class _TaskCardState extends State<TaskCard> {
                 width: 20,
                 height: 90,
                 decoration: BoxDecoration(
-                  color: MyColors.highPriority,
+                  color: priorityColor(item.taskPriority),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(6),
                     bottomLeft: Radius.circular(6),
@@ -47,13 +55,13 @@ class _TaskCardState extends State<TaskCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Nama Tugas Disini",
+                        item.taskTitle,
                         style: TextTheme.of(
                           context,
                         ).bodySmall?.copyWith(fontWeight: FontWeight.w700),
                       ),
                       Text(
-                        "Deskripsi tugas, yang panjang gitulah. Ini cuma contoh aja sih jadi gatau hasilnya gimana",
+                        item.taskDescription,
                         style: TextTheme.of(context).labelLarge,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -62,13 +70,15 @@ class _TaskCardState extends State<TaskCard> {
                       Row(
                         children: [
                           Text(
-                            "31 Agustus 2025",
+                            item.date,
                             style: TextTheme.of(context).labelMedium,
                           ),
                           SizedBox(width: 24.0),
-                          Text("24.00", style: TextTheme.of(context).labelMedium?.copyWith(
-                              fontWeight: FontWeight.w500
-                          )),
+                          Text(
+                            item.time,
+                            style: TextTheme.of(context).labelMedium
+                                ?.copyWith(fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     ],
@@ -77,17 +87,19 @@ class _TaskCardState extends State<TaskCard> {
               ),
               Checkbox(
                 value: val,
-                fillColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+                fillColor: WidgetStateProperty.resolveWith<Color>((
+                    Set<WidgetState> states,
+                    ) {
                   if (states.contains(WidgetState.selected)) {
                     return MyColors.foreground.withAlpha(100);
                   }
                   return MyColors.background;
                 }),
-                side: WidgetStateBorderSide.resolveWith(
-                        (Set<WidgetState> states) {
-                      return BorderSide.none;
-                    }
-                ),
+                side: WidgetStateBorderSide.resolveWith((
+                    Set<WidgetState> states,
+                    ) {
+                  return BorderSide.none;
+                }),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4.0),
                 ),
@@ -102,6 +114,16 @@ class _TaskCardState extends State<TaskCard> {
           ),
         ),
       ),
-    );
+    );;
+  }
+}
+
+Color priorityColor(int priority) {
+  if(priority == 1) {
+    return MyColors.lowPriority;
+  } else if (priority == 2) {
+    return MyColors.mediumPriority;
+  } else {
+    return MyColors.highPriority;
   }
 }
