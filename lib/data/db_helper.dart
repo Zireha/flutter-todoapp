@@ -31,7 +31,6 @@ class DBHelper {
   }
 
   Future<int> insertTask(Task task) async {
-
     final db = await initDb();
     return await db.insert(tableName, task.toMap());
   }
@@ -39,21 +38,29 @@ class DBHelper {
   Future<List<Task>> queryAllTask() async {
     final db = await initDb();
     final result = await db.query(tableName, orderBy: "id");
-    
+
     return result.map((result) => Task.fromMap(result)).toList();
   }
 
-  Future<Task> getTaskById(int id) async {
+  Future<List<Task>> getTaskByPriority(int priority) async {
     final db = await initDb();
-    final result = await db.query(tableName, where: "id = ?", whereArgs: [id], limit: 1);
+    final result = await db.query(
+      tableName,
+      where: "taskPriority = ?",
+      whereArgs: [priority],
+    );
 
-    return result.map((result)=>Task.fromMap(result)).first;
+    return result.map((result) => Task.fromMap(result)).toList();
   }
 
   Future<int> updateTask(int id, Task task) async {
     final db = await initDb();
     return await db.update(
-        tableName, task.toMap(), where: "id = ?", whereArgs: [task.id]);
+      tableName,
+      task.toMap(),
+      where: "id = ?",
+      whereArgs: [task.id],
+    );
   }
 
   Future<int> removeTask(int id) async {
@@ -63,21 +70,27 @@ class DBHelper {
 
   Future<void> initializeTask() async {
     List<Task> taskToAdd = [
-      Task(taskTitle: "Jogging",
-          taskDescription: "Jalan jalan doang, mau kasih desc apalagi emang?",
-          date: "20/04/2026",
-          time: "05.00",
-          taskPriority: 1),
-      Task(taskTitle: "Kerjain PR",
-          taskDescription: "PR dari pak suryadi yang kumisnya tebel itu",
-          date: "26/04/2026",
-          time: "19.00",
-          taskPriority: 2),
-      Task(taskTitle: "Ke SC",
-          taskDescription: "Ngurus berkas buat motor",
-          date: "12/04/2026",
-          time: "09.00",
-          taskPriority: 3)
+      Task(
+        taskTitle: "Jogging",
+        taskDescription: "Jalan jalan doang, mau kasih desc apalagi emang?",
+        date: "20/04/2026",
+        time: "05.00",
+        taskPriority: 1,
+      ),
+      Task(
+        taskTitle: "Kerjain PR",
+        taskDescription: "PR dari pak suryadi yang kumisnya tebel itu",
+        date: "26/04/2026",
+        time: "19.00",
+        taskPriority: 2,
+      ),
+      Task(
+        taskTitle: "Ke SC",
+        taskDescription: "Ngurus berkas buat motor",
+        date: "12/04/2026",
+        time: "09.00",
+        taskPriority: 3,
+      ),
     ];
 
     for (Task task in taskToAdd) {

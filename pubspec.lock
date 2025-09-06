@@ -148,7 +148,7 @@ packages:
     source: hosted
     version: "1.0.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"
@@ -264,6 +264,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.1"
+  tailwind_standards:
+    dependency: "direct main"
+    description:
+      name: tailwind_standards
+      sha256: ba83dcd2365e6b23ed0697acd3dcf3bcf89bd0b3fcd06db1b58c60b9a0063a54
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   term_glyph:
     dependency: transitive
     description:

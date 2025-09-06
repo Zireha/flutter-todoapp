@@ -1,96 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:todoapp_new/presentation/add/add_priority_button.dart';
-import 'package:todoapp_new/presentation/add/time_form.dart';
-import 'package:todoapp_new/styles/theme/colors.dart';
+import 'package:provider/provider.dart';
+import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
+import 'components/create_task_button.dart';
+import 'components/task_datetime_row.dart';
+import 'components/task_detail_field.dart';
+import 'components/task_form_header.dart';
+import 'components/task_priority_section.dart';
+import 'components/task_title_field.dart';
 
-class TaskForm extends StatelessWidget {
+class TaskForm extends StatefulWidget {
   const TaskForm({super.key});
 
   @override
+  State<TaskForm> createState() => _TaskFormState();
+}
+
+class _TaskFormState extends State<TaskForm> {
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController timeController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController detailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final formProvider = Provider.of<ValidationProvider>(
+        context,
+        listen: false,
+      );
+
+      
+      titleController.addListener(
+            () => formProvider.setTaskTitle(titleController.text),
+      );
+      detailController.addListener(
+            () => formProvider.setTaskDescription(detailController.text),
+      );
+      dateController.addListener(
+            () => formProvider.setDate(dateController.text),
+      );
+      timeController.addListener(
+            () => formProvider.setTime(timeController.text),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24.0),
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 12),
-              Center(
-                child: Text(
-                  "Buat Tugas Baru",
-                  style: TextTheme.of(
-                    context,
-                  ).displayLarge?.copyWith(color: MyColors.foreground),
-                ),
-              ),
-              SizedBox(height: 24),
-              Text('Nama Tugas', style: TextTheme.of(context).bodySmall),
-              SizedBox(height: 6),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: "Judul tugas disini",
-                  hintStyle: TextStyle(color: Colors.black.withAlpha(25)),
-                ),
-                style: TextTheme.of(context).bodySmall,
-              ),
-              SizedBox(height: 20),
-              Text('Detail Tugas', style: TextTheme.of(context).bodySmall),
-              SizedBox(height: 6),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: "Judul tugas disini",
-                  hintStyle: TextStyle(color: Colors.black.withAlpha(25)),
-                ),
-                style: TextTheme.of(context).bodySmall,
-                maxLines: 3,
-              ),
-              SizedBox(height: 20),
-              const TimeForm(),
-              SizedBox(height: 20),
-              Column(
+    return Consumer<ValidationProvider>(
+      builder: (context, formProvider, child) {
+        return Wrap(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Prioritas", style: TextTheme.of(context).bodySmall),
-                  const AddPriorityButton(),
+                  const SizedBox(height: 12),
+                  const TaskFormHeader(),
+                  const SizedBox(height: 24),
+                  TaskTitleField(controller: titleController),
+                  const SizedBox(height: 20),
+                  TaskDetailField(controller: detailController),
+                  const SizedBox(height: 20),
+                  TaskDateTimeRow(
+                    dateController: dateController,
+                    timeController: timeController,
+                  ),
+                  const SizedBox(height: 20),
+                  const TaskPrioritySection(),
+                  const SizedBox(height: 18),
+                  CreateTaskButton(
+                    isLoading: formProvider.isLoading,
+                    isValid: formProvider.isValid,
+                  ),
+                  const SizedBox(height: 32),
                 ],
               ),
-              SizedBox(height: 18),
-              Container(
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: MyColors.foreground,
-                  borderRadius: BorderRadius.circular(12)
-                ),
-                child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                        "Buat Tugas Baru",
-                      style: TextTheme.of(context).displaySmall?.copyWith(
-                        color: MyColors.background
-                      ),
-                    )
-                ),
-              ),
-              SizedBox(height: 32,)
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    dateController.dispose();
+    timeController.dispose();
+    titleController.dispose();
+    detailController.dispose();
+    super.dispose();
   }
 }

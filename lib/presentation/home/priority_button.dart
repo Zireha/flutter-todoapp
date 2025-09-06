@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todoapp_new/provider/home/priority_provider.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
 class PriorityButton extends StatefulWidget {
@@ -9,10 +11,10 @@ class PriorityButton extends StatefulWidget {
 }
 
 class _PriorityButtonState extends State<PriorityButton> {
-  int? _val = 0;
-
   @override
   Widget build(BuildContext context) {
+    final priorityProvider = Provider.of<PriorityProvider>(context);
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -22,12 +24,12 @@ class _PriorityButtonState extends State<PriorityButton> {
             spacing: 12.0,
             children:
                 List.generate(4, (int index) {
-                  final label = ["Semua", "Tinggi", "Sedang", "Rendah"];
+                  final label = ["Semua", "Rendah", "Sedang", "Tinggi"];
                   final colors = [
                     MyColors.foreground,
-                    MyColors.highPriority,
-                    MyColors.mediumPriority,
                     MyColors.lowPriority,
+                    MyColors.mediumPriority,
+                    MyColors.highPriority,
                   ];
 
                   return ChoiceChip(
@@ -40,15 +42,14 @@ class _PriorityButtonState extends State<PriorityButton> {
                       ),
                     ),
                     selectedColor: colors[index],
-                    selected: _val == index,
+                    selected: priorityProvider.priority == index,
                     backgroundColor: colors[index].withAlpha(100),
                     showCheckmark: false,
                     side: BorderSide.none,
                     onSelected: (bool selected) {
-                      setState(() {
-                        // TODO: get every tasks from its priority filter
-                        _val = selected ? index : null;
-                      });
+                      if (selected) {
+                        priorityProvider.setPriority(index);
+                      }
                     },
                   );
                 }).toList(),

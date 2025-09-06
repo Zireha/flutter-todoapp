@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:todoapp_new/provider/data/local_db_provider.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
-
 import '../../data/model/task_model.dart';
 
 class TaskCard extends StatefulWidget {
@@ -114,7 +111,7 @@ class _TaskCardState extends State<TaskCard> {
           ),
         ),
       ),
-    );;
+    );
   }
 }
 

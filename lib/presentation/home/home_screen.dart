@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoapp_new/presentation/home/components/add_bottom_sheet.dart';
+import 'package:todoapp_new/presentation/home/components/home_screen_header.dart';
 import 'package:todoapp_new/presentation/home/priority_button.dart';
 import 'package:todoapp_new/presentation/home/task_card.dart';
-import 'package:todoapp_new/presentation/add/task_form.dart';
+import 'package:todoapp_new/provider/home/priority_provider.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
 import '../../provider/data/local_db_provider.dart';
@@ -26,8 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const user = "Pengguna";
-
     return Scaffold(
       backgroundColor: MyColors.background,
       appBar: AppBar(
@@ -41,72 +41,29 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         elevation: 20,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: MyColors.foreground,
-        tooltip: 'add',
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-        child: const Icon(Icons.add, color: MyColors.background, size: 28),
-        onPressed: () {
-          showModalBottomSheet(
-            showDragHandle: true,
-            enableDrag: true,
-            isDismissible: true,
-            isScrollControlled: true,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            context: context,
-            builder: (BuildContext context) => TaskForm(),
-          );
-        },
-      ),
+      floatingActionButton: AddBottomSheet(),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 24.0),
         children: [
-          // Header
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Selamat Pagi, $user",
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: MyColors.foreground,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Apa aja aktivitasmu hari ini?",
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: MyColors.foreground,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                Text(
-                  'Semua Tugas',
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-              ],
-            ),
-          ),
-
+          HomeScreenHeader(),
           const SizedBox(height: 8),
           const PriorityButton(),
           const SizedBox(height: 20),
-
-          // Task list
-          Consumer<LocalDBProvider>(
-            builder: (context, value, child) {
-              final tasks = value.taskList;
+          Consumer2<LocalDBProvider, PriorityProvider>(
+            builder: (context, localDBProvider, priorityProvider, child) {
+              final tasks = localDBProvider.taskList;
 
               if (tasks == null) {
                 return const Center(child: Text("Tidak ada tugas"));
               }
 
+              final displayTasks = localDBProvider.getFilteredTasks(
+                priorityProvider.priority,
+              );
+
               return Column(
-                children: tasks.map((task) => TaskCard(task: task)).toList(),
+                children:
+                    displayTasks.map((task) => TaskCard(task: task)).toList(),
               );
             },
           ),

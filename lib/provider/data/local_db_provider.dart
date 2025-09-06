@@ -12,6 +12,9 @@ class LocalDBProvider extends ChangeNotifier {
   List<Task>? _taskList;
   List<Task>? get taskList => _taskList;
 
+  List<Task>? _filteredTaskList;
+  List<Task>? get filteredTaskList => _filteredTaskList;
+
   Task? _task;
   Task? get task => _task;
 
@@ -20,14 +23,13 @@ class LocalDBProvider extends ChangeNotifier {
       final result = await _dbHelper.insertTask(value);
       final isError = result == 0;
 
-      if(isError) {
+      if (isError) {
         _message = "Failed to create task";
         notifyListeners();
       } else {
         _message = "Task saved";
         notifyListeners();
       }
-
     } catch (e) {
       _message = "Task failed to save";
       notifyListeners();
@@ -43,21 +45,11 @@ class LocalDBProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> loadTaskById(int id) async {
-    try {
-      _task = await _dbHelper.getTaskById(id);
-      notifyListeners();
-    } catch (e) {
-      _message ="Failed to load selected task";
-      notifyListeners();
-    }
-  }
-
   Future<void> updateTask(int id, Task value) async {
     try {
       final result = await _dbHelper.updateTask(id, value);
       final isEmptyRowUpdated = result == 0;
-      if(isEmptyRowUpdated) {
+      if (isEmptyRowUpdated) {
         _message = "Failed to update task";
         notifyListeners();
       } else {
@@ -78,6 +70,18 @@ class LocalDBProvider extends ChangeNotifier {
     } catch (e) {
       _message = "Failed to delete task";
       notifyListeners();
+    }
+  }
+
+  List<Task> getFilteredTasks(int priority) {
+    if (_taskList == null) {
+      return [];
+    }
+
+    if (priority == 0) {
+      return _taskList!;
+    } else {
+      return _taskList!.where((task) => task.taskPriority == priority).toList();
     }
   }
 }

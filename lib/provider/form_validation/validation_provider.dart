@@ -1,52 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:todoapp_new/data/validation_item.dart';
+import '../../data/model/task_model.dart';
 
-class Validation extends ChangeNotifier {
-  ValidationItem _taskTitle = ValidationItem(value: null, error: null);
-  ValidationItem _taskDescription = ValidationItem(value: null, error: null);
-  ValidationItem _date = ValidationItem(value: null, error: null);
-  ValidationItem _time = ValidationItem(value: null, error: null);
+class ValidationProvider extends ChangeNotifier {
+  String _taskTitle = '';
+  String _taskDescription = '';
+  String _date = '';
+  String _time = '';
+  int? _priority;
+  bool _isLoading = false;
 
-  // getters
-  ValidationItem get taskTitle => _taskTitle;
-  ValidationItem get taskDescription => _taskDescription;
-  ValidationItem get date => _date;
-  ValidationItem get time => _time;
+  // Getters
+  String get taskTitle => _taskTitle;
+  String get taskDescription => _taskDescription;
+  String get date => _date;
+  String get time => _time;
+  int? get priority => _priority;
+  bool get isLoading => _isLoading;
 
-  // setters
-  void changeTitle(String value) {
-    if(value.isNotEmpty) {
-      _taskTitle = ValidationItem(value: value, error: null);
-    } else {
-      _taskTitle = ValidationItem(value: null, error: "Isi judul tugas anda");
-    }
+  // Validation - all fields must be filled
+  bool get isValid =>
+      _taskTitle.isNotEmpty &&
+          _taskDescription.isNotEmpty &&
+          _date.isNotEmpty &&
+          _time.isNotEmpty &&
+          _priority != null;
+
+  // Setters
+  void setTaskTitle(String value) {
+    _taskTitle = value;
     notifyListeners();
   }
 
-  void changeDescription(String value) {
-    if(value.isNotEmpty) {
-      _taskDescription = ValidationItem(value: value, error: null);
-    } else {
-      _taskDescription = ValidationItem(value: null, error: "Isi deskripsi tugas anda");
-    }
+  void setTaskDescription(String value) {
+    _taskDescription = value;
     notifyListeners();
   }
 
-  void changeDate(String value) {
-    if(value.isNotEmpty) {
-      _time = ValidationItem(value: value, error: null);
-    } else {
-      _time = ValidationItem(value: null, error: "Isi tanggal tugas anda");
-    }
+  void setDate(String value) {
+    _date = value;
     notifyListeners();
   }
 
-  void changeTime(String value) {
-    if(value.isNotEmpty) {
-      _date = ValidationItem(value: value, error: null);
-    } else {
-      _date = ValidationItem(value: null, error: "Isi waktu tugas anda");
-    }
+  void setTime(String value) {
+    _time = value;
+    notifyListeners();
+  }
+
+  void changePriority(int value) {
+    _priority = value;
+    notifyListeners();
+  }
+
+  void setLoading(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
+
+  // Create task object
+  Task createTask() {
+    return Task(
+      taskTitle: _taskTitle,
+      taskDescription: _taskDescription,
+      date: _date,
+      time: _time,
+      taskPriority: _priority!,
+    );
+  }
+
+  // Clear form after successful save
+  void clearForm() {
+    _taskTitle = '';
+    _taskDescription = '';
+    _date = '';
+    _time = '';
+    _priority = null;
+    _isLoading = false;
     notifyListeners();
   }
 }

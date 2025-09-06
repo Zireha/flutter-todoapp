@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todoapp_new/provider/data/local_db_provider.dart';
+import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
+
+import '../../../styles/theme/colors.dart';
+
+class CreateTaskButton extends StatelessWidget {
+  final bool isLoading;
+  final bool isValid;
+
+  const CreateTaskButton({
+    super.key,
+    required this.isLoading,
+    required this.isValid,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        color: isValid ? MyColors.foreground : Colors.grey.shade400,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextButton(
+        onPressed:
+            isValid && !isLoading ? () => _handleSaveTask(context) : null,
+        child:
+            isLoading
+                ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                : Text(
+                  "Buat Tugas Baru",
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    color: MyColors.background,
+                  ),
+                ),
+      ),
+    );
+  }
+
+  Future<void> _handleSaveTask(BuildContext context) async {
+    final formProvider = Provider.of<ValidationProvider>(
+      context,
+      listen: false,
+    );
+    final dbProvider = Provider.of<LocalDBProvider>(context, listen: false);
+
+    formProvider.setLoading(true);
+
+    try {
+      final task = formProvider.createTask();
+      await dbProvider.saveTask(task);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Task berhasil disimpan!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        formProvider.clearForm();
+        Navigator.pop(context);
+        dbProvider.loadAllTasks();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal menyimpan task: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      formProvider.setLoading(false);
+    }
+  }
+}

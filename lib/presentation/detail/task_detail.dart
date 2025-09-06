@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../styles/theme/colors.dart';
 import '../add/add_priority_button.dart';
-import '../add/time_form.dart';
 
 class TaskDetail extends StatelessWidget {
   const TaskDetail({super.key});
@@ -60,7 +59,6 @@ class TaskDetail extends StatelessWidget {
                 maxLines: 3,
               ),
               SizedBox(height: 20),
-              const TimeForm(),
               SizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
