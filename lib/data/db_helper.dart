@@ -30,6 +30,17 @@ class DBHelper {
     ''');
   }
 
+  Future<Task> getTaskById(int id) async {
+    final db = await initDb();
+    final result = await db.query(tableName, where: "id = ?", whereArgs: [id]);
+
+    if (result.isEmpty) {
+      throw Exception("Task not found");
+    }
+
+    return result.map((result) => Task.fromMap(result)).first;
+  }
+
   Future<int> insertTask(Task task) async {
     final db = await initDb();
     return await db.insert(tableName, task.toMap());

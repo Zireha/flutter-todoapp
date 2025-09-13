@@ -22,6 +22,7 @@ class Task {
 
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
+      id: map["id"],
       taskTitle: map["taskTitle"],
       taskDescription: map["taskDescription"],
       time: map["time"],

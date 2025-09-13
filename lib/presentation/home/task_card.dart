@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp_new/presentation/detail/task_detail.dart';
+import 'package:todoapp_new/presentation/home/components/task_body.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 import '../../data/model/task_model.dart';
 
@@ -16,7 +18,6 @@ class _TaskCardState extends State<TaskCard> {
 
   @override
   Widget build(BuildContext context) {
-
     final item = widget.task;
 
     return GestureDetector(
@@ -30,97 +31,22 @@ class _TaskCardState extends State<TaskCard> {
               bottomRight: Radius.circular(6),
             ),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 20,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: priorityColor(item.taskPriority),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(6),
-                    bottomLeft: Radius.circular(6),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(left: 12, right: 52),
-                  color: Color(0x0fffffff),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        item.taskTitle,
-                        style: TextTheme.of(
-                          context,
-                        ).bodySmall?.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Text(
-                        item.taskDescription,
-                        style: TextTheme.of(context).labelLarge,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Text(
-                            item.date,
-                            style: TextTheme.of(context).labelMedium,
-                          ),
-                          SizedBox(width: 24.0),
-                          Text(
-                            item.time,
-                            style: TextTheme.of(context).labelMedium
-                                ?.copyWith(fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Checkbox(
-                value: val,
-                fillColor: WidgetStateProperty.resolveWith<Color>((
-                    Set<WidgetState> states,
-                    ) {
-                  if (states.contains(WidgetState.selected)) {
-                    return MyColors.foreground.withAlpha(100);
-                  }
-                  return MyColors.background;
-                }),
-                side: WidgetStateBorderSide.resolveWith((
-                    Set<WidgetState> states,
-                    ) {
-                  return BorderSide.none;
-                }),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-                activeColor: MyColors.foreground,
-                onChanged: (bool? newVal) {
-                  setState(() {
-                    val = newVal;
-                  });
-                },
-              ),
-            ],
-          ),
+          child: TaskBody(task: item),
         ),
       ),
+      onTap: () {
+        showModalBottomSheet(
+          backgroundColor: MyColors.foreground,
+          context: context,
+          showDragHandle: true,
+          isDismissible: true,
+          enableDrag: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder: (BuildContext context) => TaskDetail(id: item.id as int)
+        );
+      },
     );
-  }
-}
-
-Color priorityColor(int priority) {
-  if(priority == 1) {
-    return MyColors.lowPriority;
-  } else if (priority == 2) {
-    return MyColors.mediumPriority;
-  } else {
-    return MyColors.highPriority;
   }
 }

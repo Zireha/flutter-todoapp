@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:todoapp_new/data/db_helper.dart';
 import 'package:todoapp_new/presentation/home/home_screen.dart';
 import 'package:todoapp_new/provider/data/local_db_provider.dart';
+import 'package:todoapp_new/provider/detail/detail_provider.dart';
 import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
+import 'package:todoapp_new/provider/home/home_provider.dart';
 import 'package:todoapp_new/provider/home/priority_provider.dart';
 import 'package:todoapp_new/styles/theme/app_theme.dart';
 
 void main() async {
   DBHelper dbHelper = DBHelper();
   WidgetsFlutterBinding.ensureInitialized();
-  await dbHelper.initializeTask();
   await dbHelper.initDb();
 
   runApp(
@@ -18,11 +19,15 @@ void main() async {
       providers: [
         Provider<DBHelper>(create: (context) => DBHelper()),
         Provider<PriorityProvider>(create: (context) => PriorityProvider()),
+        Provider<DetailProvider>(create: (context) => DetailProvider()),
+        Provider<HomeProvider>(create: (context) => HomeProvider()),
         ChangeNotifierProvider(
           create: (context) => LocalDBProvider(context.read<DBHelper>()),
         ),
         ChangeNotifierProvider(create: (context) => ValidationProvider()),
         ChangeNotifierProvider(create: (context) => PriorityProvider()),
+        ChangeNotifierProvider(create: (context) => DetailProvider()),
+        ChangeNotifierProvider(create: (context) => HomeProvider()),
       ],
       child: const MyApp(),
     ),
