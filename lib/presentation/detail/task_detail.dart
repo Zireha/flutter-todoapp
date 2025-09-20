@@ -1,5 +1,5 @@
 import 'package:provider/provider.dart';
-import 'package:todoapp_new/presentation/detail/components/detail_option_button.dart';
+import 'package:todoapp_new/presentation/detail/components/detail_opt_button.dart';
 import 'package:todoapp_new/presentation/detail/components/text_column_field.dart';
 import 'package:flutter/material.dart';
 import 'package:todoapp_new/provider/detail/detail_provider.dart';
@@ -77,8 +77,8 @@ class _TaskDetailState extends State<TaskDetail> {
                         taskDetail.taskDescription,
                   ),
                   SizedBox(height: 26),
-                  DetailOptionButton(id: detailProvider.taskDetail?.id),
-                  SizedBox(height: 60),
+                  DetailOptButton(id: widget.id,),
+                  SizedBox(height: 160,)
                 ],
               ),
             );

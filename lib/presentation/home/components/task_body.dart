@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todoapp_new/data/model/task_model.dart';
+import 'package:todoapp_new/data/model/task.dart';
 import 'package:todoapp_new/presentation/home/components/task_checkbox.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 

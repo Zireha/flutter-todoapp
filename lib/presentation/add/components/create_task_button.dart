@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoapp_new/data/model/task.dart';
 import 'package:todoapp_new/provider/data/local_db_provider.dart';
 import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
 
@@ -8,11 +9,15 @@ import '../../../styles/theme/colors.dart';
 class CreateTaskButton extends StatelessWidget {
   final bool isLoading;
   final bool isValid;
+  final bool isEditMode;
+  final Task? existingTask;
 
   const CreateTaskButton({
     super.key,
     required this.isLoading,
     required this.isValid,
+    this.isEditMode = false,
+    this.existingTask,
   });
 
   @override
@@ -56,17 +61,33 @@ class CreateTaskButton extends StatelessWidget {
     formProvider.setLoading(true);
 
     try {
-      final task = formProvider.createTask();
-      await dbProvider.saveTask(task);
+      if (isEditMode && existingTask != null) {
+        final updatedTask = formProvider.updateTask(existingTask!.id!);
+        await dbProvider.updateTask(existingTask!.id!, updatedTask);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Task telah diperbarui"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        final task = formProvider.createTask();
+        await dbProvider.saveTask(task);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Task berhasil disimpan!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Task berhasil disimpan!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-
         formProvider.clearForm();
         Navigator.pop(context);
         dbProvider.loadAllTasks();
@@ -75,7 +96,9 @@ class CreateTaskButton extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Gagal menyimpan task: ${e.toString()}'),
+            content: Text(
+              isEditMode ? 'Gagal memperbarui task: ${e.toString()}' : 'Gagal menyimpan task: ${e.toString()}'
+            ),
             backgroundColor: Colors.red,
           ),
         );

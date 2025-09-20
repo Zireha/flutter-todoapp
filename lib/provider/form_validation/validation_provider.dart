@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/model/task_model.dart';
+import '../../data/model/task.dart';
 
 class ValidationProvider extends ChangeNotifier {
   String _taskTitle = '';
@@ -8,8 +8,7 @@ class ValidationProvider extends ChangeNotifier {
   String _time = '';
   int? _priority;
   bool _isLoading = false;
-
-  // Getters
+  
   String get taskTitle => _taskTitle;
   String get taskDescription => _taskDescription;
   String get date => _date;
@@ -17,15 +16,13 @@ class ValidationProvider extends ChangeNotifier {
   int? get priority => _priority;
   bool get isLoading => _isLoading;
 
-  // Validation - all fields must be filled
   bool get isValid =>
       _taskTitle.isNotEmpty &&
-          _taskDescription.isNotEmpty &&
-          _date.isNotEmpty &&
-          _time.isNotEmpty &&
-          _priority != null;
+      _taskDescription.isNotEmpty &&
+      _date.isNotEmpty &&
+      _time.isNotEmpty &&
+      _priority != null;
 
-  // Setters
   void setTaskTitle(String value) {
     _taskTitle = value;
     notifyListeners();
@@ -56,7 +53,6 @@ class ValidationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Create task object
   Task createTask() {
     return Task(
       taskTitle: _taskTitle,
@@ -67,7 +63,26 @@ class ValidationProvider extends ChangeNotifier {
     );
   }
 
-  // Clear form after successful save
+  void fillValueWithExistingTask(Task task) {
+    _taskTitle = task.taskTitle;
+    _taskDescription = task.taskDescription;
+    _date = task.date;
+    _time = task.time;
+    _priority = task.taskPriority;
+    notifyListeners();
+  }
+
+  Task updateTask(int taskId) {
+    return Task(
+      id: taskId,
+      taskTitle: _taskTitle,
+      taskDescription: _taskDescription,
+      date: _date,
+      time: _time,
+      taskPriority: _priority!,
+    );
+  }
+
   void clearForm() {
     _taskTitle = '';
     _taskDescription = '';

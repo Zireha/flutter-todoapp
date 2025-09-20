@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoapp_new/data/model/task.dart';
+import 'package:todoapp_new/presentation/add/task_form.dart';
+import 'package:todoapp_new/presentation/home/components/add_bottom_sheet.dart';
 import 'package:todoapp_new/provider/data/local_db_provider.dart';
-import 'package:todoapp_new/provider/detail/detail_provider.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
-class DetailOptionButton extends StatefulWidget {
+class DetailOptButton extends StatefulWidget {
   final int? id;
-  const DetailOptionButton({super.key, required this.id});
+  const DetailOptButton({super.key, required this.id});
 
   @override
-  State<DetailOptionButton> createState() => _DetailOptionButtonState();
+  State<DetailOptButton> createState() => _DetailOptButtonState();
 }
 
-class _DetailOptionButtonState extends State<DetailOptionButton> {
+class _DetailOptButtonState extends State<DetailOptButton> {
   @override
   Widget build(BuildContext context) {
-    final detailProvider = Provider.of<DetailProvider>(context);
     final localDBProvider = Provider.of<LocalDBProvider>(context);
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        FilledButton.icon(
+        ElevatedButton(
           onPressed: () async {
             if (widget.id == null) {
               Navigator.pop(context);
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text("Gagal menghapus data")));
+              ).showSnackBar(SnackBar(content: Text("Gagal Menghapus Data")));
               return;
             }
 
@@ -36,7 +38,7 @@ class _DetailOptionButtonState extends State<DetailOptionButton> {
               builder:
                   (BuildContext context) => AlertDialog(
                     title: Text("Hapus Tugas?"),
-                    content: Text("Anda yakin ingin menghapus tugas ini?"),
+                    content: Text("Anda yakin ingin menghapus tugas?"),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -56,7 +58,7 @@ class _DetailOptionButtonState extends State<DetailOptionButton> {
 
             if (result == "Ya") {
               try {
-                await detailProvider.deleteTask(widget.id as int);
+                await localDBProvider.deleteTaskById(widget.id as int);
                 await localDBProvider.loadAllTasks();
 
                 Navigator.pop(context);
@@ -76,22 +78,37 @@ class _DetailOptionButtonState extends State<DetailOptionButton> {
               }
             }
           },
-          label: Icon(Icons.delete),
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(Color(0xffB80101)),
-            overlayColor: WidgetStateProperty.all(Color(0xffB80101)),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: MyColors.background,
+            backgroundColor: Colors.red,
+            minimumSize: Size(84, 30),
           ),
+          child: Icon(Icons.delete, color: MyColors.background),
         ),
-        SizedBox(width: 12),
-        FilledButton.icon(
-          onPressed: () {},
-          label: Icon(Icons.edit, color: MyColors.foreground),
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(MyColors.background),
-            overlayColor: WidgetStateProperty.all(MyColors.background),
+        SizedBox(width: 16),
+        ElevatedButton(
+          onPressed: () => _navigateToEditTask(task),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: MyColors.background,
+            minimumSize: Size(84, 30),
           ),
+          child: Icon(Icons.edit),
         ),
       ],
     );
+  }
+
+  void _navigateToEditTask(Task task) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: TaskForm(
+            isEditMode: true,
+            existingTask: task,
+            ),
+        )
+        )
+    )
   }
 }

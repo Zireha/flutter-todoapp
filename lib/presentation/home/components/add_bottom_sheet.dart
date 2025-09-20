@@ -22,7 +22,7 @@ class AddBottomSheet extends StatelessWidget {
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             context: context,
-            builder: (BuildContext context) => TaskForm(),
+            builder: (BuildContext context) => TaskForm(isEditMode: false,),
           );
         },
       );

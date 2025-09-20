@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todoapp_new/data/db_helper.dart';
-import 'package:todoapp_new/data/model/task_model.dart';
+import 'package:todoapp_new/data/model/task.dart';
 
 class LocalDBProvider extends ChangeNotifier {
   final DBHelper _dbHelper;

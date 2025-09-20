@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoapp_new/data/model/task.dart';
 import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
 import 'components/create_task_button.dart';
 import 'components/task_datetime_row.dart';
@@ -9,7 +10,14 @@ import 'components/task_priority_section.dart';
 import 'components/task_title_field.dart';
 
 class TaskForm extends StatefulWidget {
-  const TaskForm({super.key});
+  final Task? existingTask;
+  final bool isEditMode;
+
+  const TaskForm({
+    super.key,
+    this.existingTask,
+    required this.isEditMode,
+  });
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -30,20 +38,33 @@ class _TaskFormState extends State<TaskForm> {
         listen: false,
       );
 
-      
+      if (widget.isEditMode && widget.existingTask != null) {
+        _populateFormWithExistingTask();
+        formProvider.fillValueWithExistingTask(widget.existingTask!);
+      }
+
       titleController.addListener(
-            () => formProvider.setTaskTitle(titleController.text),
+        () => formProvider.setTaskTitle(titleController.text),
       );
       detailController.addListener(
-            () => formProvider.setTaskDescription(detailController.text),
+        () => formProvider.setTaskDescription(detailController.text),
       );
       dateController.addListener(
-            () => formProvider.setDate(dateController.text),
+        () => formProvider.setDate(dateController.text),
       );
       timeController.addListener(
-            () => formProvider.setTime(timeController.text),
+        () => formProvider.setTime(timeController.text),
       );
     });
+  }
+
+  void _populateFormWithExistingTask() {
+    if (widget.existingTask != null) {
+      titleController.text = widget.existingTask!.taskTitle;
+      detailController.text = widget.existingTask!.taskDescription;
+      dateController.text = widget.existingTask!.date;
+      timeController.text = widget.existingTask!.time;
+    }
   }
 
   @override

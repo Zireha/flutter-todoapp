@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todoapp_new/presentation/detail/task_detail.dart';
 import 'package:todoapp_new/presentation/home/components/task_body.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
-import '../../data/model/task_model.dart';
+import '../../data/model/task.dart';
 
 class TaskCard extends StatefulWidget {
   final Task task;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todoapp_new/data/db_helper.dart';
-import 'package:todoapp_new/data/model/task_model.dart';
+import 'package:todoapp_new/data/model/task.dart';
 
 class DetailProvider extends ChangeNotifier {
   late final DBHelper _dbHelper;
@@ -22,19 +22,5 @@ class DetailProvider extends ChangeNotifier {
       _taskDetail = null;
     }
     notifyListeners();
-  }
-
-  Future<bool> deleteTask(int id) async {
-    try {
-      await _dbHelper.removeTask(id);
-      _dbHelper.queryAllTask;
-      _message = "Berhasil menghapus tugas";
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _message = "Gagal menghapus tugas, Error: $e";
-      notifyListeners();
-      return false;
-    }
   }
 }
