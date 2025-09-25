@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoapp_new/data/model/task.dart';
 import 'package:todoapp_new/presentation/add/task_form.dart';
-import 'package:todoapp_new/presentation/home/components/add_bottom_sheet.dart';
 import 'package:todoapp_new/provider/data/local_db_provider.dart';
+import 'package:todoapp_new/static/action_page_enum.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
 class DetailOptButton extends StatefulWidget {
   final int? id;
-  const DetailOptButton({super.key, required this.id});
+  final Task? task;
+  const DetailOptButton({super.key, required this.id, this.task});
 
   @override
   State<DetailOptButton> createState() => _DetailOptButtonState();
@@ -87,7 +88,7 @@ class _DetailOptButtonState extends State<DetailOptButton> {
         ),
         SizedBox(width: 16),
         ElevatedButton(
-          onPressed: () => _navigateToEditTask(task),
+          onPressed: () => _navigateToEditTask(widget.task),
           style: ElevatedButton.styleFrom(
             foregroundColor: MyColors.background,
             minimumSize: Size(84, 30),
@@ -98,17 +99,17 @@ class _DetailOptButtonState extends State<DetailOptButton> {
     );
   }
 
-  void _navigateToEditTask(Task task) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          body: TaskForm(
-            isEditMode: true,
-            existingTask: task,
-            ),
-        )
-        )
-    )
+  void _navigateToEditTask(Task? task) {
+    Navigator.pop(context);
+    showModalBottomSheet(
+      isScrollControlled: true,
+      showDragHandle: true,
+      enableDrag: true,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      context: context,
+      builder:
+          (BuildContext context) =>
+              TaskForm(actionPageEnum: ActionPageEnum.edit, existingTask: task,),
+    );
   }
 }

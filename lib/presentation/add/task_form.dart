@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoapp_new/data/model/task.dart';
+import 'package:todoapp_new/provider/data/local_db_provider.dart';
+import 'package:todoapp_new/provider/detail/detail_provider.dart';
 import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
+import 'package:todoapp_new/static/action_page_enum.dart';
+import 'package:todoapp_new/styles/theme/colors.dart';
 import 'components/create_task_button.dart';
 import 'components/task_datetime_row.dart';
-import 'components/task_detail_field.dart';
-import 'components/task_form_header.dart';
 import 'components/task_priority_section.dart';
-import 'components/task_title_field.dart';
 
 class TaskForm extends StatefulWidget {
   final Task? existingTask;
-  final bool isEditMode;
+  final ActionPageEnum actionPageEnum;
 
-  const TaskForm({
-    super.key,
-    this.existingTask,
-    required this.isEditMode,
-  });
+  const TaskForm({super.key, this.existingTask, required this.actionPageEnum});
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -38,9 +35,19 @@ class _TaskFormState extends State<TaskForm> {
         listen: false,
       );
 
-      if (widget.isEditMode && widget.existingTask != null) {
-        _populateFormWithExistingTask();
-        formProvider.fillValueWithExistingTask(widget.existingTask!);
+      if (widget.actionPageEnum.isEdit) {
+        formProvider.setEditMode(true);
+
+        titleController.text = widget.existingTask?.taskTitle ?? "";
+        dateController.text = widget.existingTask?.date ?? "";
+        timeController.text = widget.existingTask?.time ?? "";
+        detailController.text = widget.existingTask?.taskDescription ?? "";
+
+        if (widget.existingTask != null) {
+          formProvider.fillValueWithExistingTask(widget.existingTask!);
+        } else {
+          formProvider.setEditMode(false);
+        }
       }
 
       titleController.addListener(
@@ -58,15 +65,6 @@ class _TaskFormState extends State<TaskForm> {
     });
   }
 
-  void _populateFormWithExistingTask() {
-    if (widget.existingTask != null) {
-      titleController.text = widget.existingTask!.taskTitle;
-      detailController.text = widget.existingTask!.taskDescription;
-      dateController.text = widget.existingTask!.date;
-      timeController.text = widget.existingTask!.time;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<ValidationProvider>(
@@ -80,24 +78,89 @@ class _TaskFormState extends State<TaskForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 12),
-                  const TaskFormHeader(),
+                  Center(
+                    child: Text(
+                      widget.actionPageEnum.isEdit
+                          ? "Edit Tugas"
+                          : "Buat Tugas Baru",
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        color: MyColors.foreground,
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 24),
-                  TaskTitleField(controller: titleController),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Nama Tugas',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: titleController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: "Judul tugas disini",
+                          hintStyle: TextStyle(
+                            color: Colors.black.withAlpha(25),
+                          ),
+                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 20),
-                  TaskDetailField(controller: detailController),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Detail Tugas',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: detailController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: "Detail tugas disini",
+                          hintStyle: TextStyle(
+                            color: Colors.black.withAlpha(25),
+                          ),
+                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
+                        maxLines: 3,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   TaskDateTimeRow(
                     dateController: dateController,
                     timeController: timeController,
                   ),
                   const SizedBox(height: 20),
-                  const TaskPrioritySection(),
+                  TaskPrioritySection(
+                    existingPriority: widget.existingTask?.taskPriority,
+                    isEditMode: widget.actionPageEnum.isEdit,
+                  ),
                   const SizedBox(height: 18),
                   CreateTaskButton(
                     isLoading: formProvider.isLoading,
                     isValid: formProvider.isValid,
+                    actionPageEnum: widget.actionPageEnum,
+                    existingTask: widget.existingTask,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 64),
                 ],
               ),
             ),

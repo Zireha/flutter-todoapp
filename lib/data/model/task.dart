@@ -12,6 +12,7 @@ class Task {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      "id" : id,
       "taskTitle" : taskTitle,
       "taskDescription" : taskDescription,
       "time" : time,

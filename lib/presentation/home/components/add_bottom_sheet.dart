@@ -1,4 +1,5 @@
 import 'package:todoapp_new/presentation/add/task_form.dart';
+import 'package:todoapp_new/static/action_page_enum.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class AddBottomSheet extends StatelessWidget {
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             context: context,
-            builder: (BuildContext context) => TaskForm(isEditMode: false,),
+            builder: (BuildContext context) => TaskForm(actionPageEnum: ActionPageEnum.add,),
           );
         },
       );

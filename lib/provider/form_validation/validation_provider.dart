@@ -8,20 +8,38 @@ class ValidationProvider extends ChangeNotifier {
   String _time = '';
   int? _priority;
   bool _isLoading = false;
-  
+  bool _isEditMode = false;
+
   String get taskTitle => _taskTitle;
   String get taskDescription => _taskDescription;
   String get date => _date;
   String get time => _time;
   int? get priority => _priority;
   bool get isLoading => _isLoading;
+  bool get isEditMode => _isEditMode;
 
-  bool get isValid =>
-      _taskTitle.isNotEmpty &&
-      _taskDescription.isNotEmpty &&
-      _date.isNotEmpty &&
-      _time.isNotEmpty &&
-      _priority != null;
+  bool get isValid {
+    if (_isEditMode) {
+      // Di mode edit, minimal ada 1 field yang berubah atau semua field valid
+      return _taskTitle.isNotEmpty &&
+          _taskDescription.isNotEmpty &&
+          _date.isNotEmpty &&
+          _time.isNotEmpty &&
+          _priority != null;
+    } else {
+      // Di mode create, semua field harus terisi
+      return _taskTitle.isNotEmpty &&
+          _taskDescription.isNotEmpty &&
+          _date.isNotEmpty &&
+          _time.isNotEmpty &&
+          _priority != null;
+    }
+  }
+
+  void setEditMode(bool isEdit) {
+    _isEditMode = isEdit;
+    notifyListeners();
+  }
 
   void setTaskTitle(String value) {
     _taskTitle = value;

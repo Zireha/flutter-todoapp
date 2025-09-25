@@ -70,7 +70,7 @@ class DBHelper {
       tableName,
       task.toMap(),
       where: "id = ?",
-      whereArgs: [task.id],
+      whereArgs: [id],
     );
   }
 

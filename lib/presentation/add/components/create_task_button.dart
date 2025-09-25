@@ -3,20 +3,21 @@ import 'package:provider/provider.dart';
 import 'package:todoapp_new/data/model/task.dart';
 import 'package:todoapp_new/provider/data/local_db_provider.dart';
 import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
+import 'package:todoapp_new/static/action_page_enum.dart';
 
 import '../../../styles/theme/colors.dart';
 
 class CreateTaskButton extends StatelessWidget {
   final bool isLoading;
   final bool isValid;
-  final bool isEditMode;
   final Task? existingTask;
+  final ActionPageEnum actionPageEnum;
 
   const CreateTaskButton({
     super.key,
     required this.isLoading,
     required this.isValid,
-    this.isEditMode = false,
+    required this.actionPageEnum,
     this.existingTask,
   });
 
@@ -42,7 +43,7 @@ class CreateTaskButton extends StatelessWidget {
                   ),
                 )
                 : Text(
-                  "Buat Tugas Baru",
+                  actionPageEnum.isEdit ? "Perbarui Tugas" : "Buat Tugas",
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: MyColors.background,
                   ),
@@ -61,7 +62,7 @@ class CreateTaskButton extends StatelessWidget {
     formProvider.setLoading(true);
 
     try {
-      if (isEditMode && existingTask != null) {
+      if (actionPageEnum.isEdit && existingTask != null) {
         final updatedTask = formProvider.updateTask(existingTask!.id!);
         await dbProvider.updateTask(existingTask!.id!, updatedTask);
 
@@ -97,7 +98,9 @@ class CreateTaskButton extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              isEditMode ? 'Gagal memperbarui task: ${e.toString()}' : 'Gagal menyimpan task: ${e.toString()}'
+              actionPageEnum.isEdit
+                  ? 'Gagal memperbarui task: ${e.toString()}'
+                  : 'Gagal menyimpan task: ${e.toString()}',
             ),
             backgroundColor: Colors.red,
           ),

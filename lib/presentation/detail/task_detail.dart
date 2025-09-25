@@ -55,7 +55,7 @@ class _TaskDetailState extends State<TaskDetail> {
                   SizedBox(height: 34),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    spacing: 54,
+                    spacing: 40,
                     children: [
                       TextColumnField(header: "Tanggal", body: taskDetail.date),
                       TextColumnField(header: "Waktu", body: taskDetail.time),
@@ -77,7 +77,7 @@ class _TaskDetailState extends State<TaskDetail> {
                         taskDetail.taskDescription,
                   ),
                   SizedBox(height: 26),
-                  DetailOptButton(id: widget.id,),
+                  DetailOptButton(id: widget.id, task: taskDetail,),
                   SizedBox(height: 160,)
                 ],
               ),

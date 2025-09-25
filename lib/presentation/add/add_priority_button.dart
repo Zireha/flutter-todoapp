@@ -4,7 +4,10 @@ import 'package:todoapp_new/provider/form_validation/validation_provider.dart';
 import 'package:todoapp_new/styles/theme/colors.dart';
 
 class AddPriorityButton extends StatefulWidget {
-  const AddPriorityButton({super.key});
+  final int? existingPriority;
+  final bool isEditMode;
+
+  const AddPriorityButton({super.key, this.existingPriority, this.isEditMode = false});
 
   @override
   State<AddPriorityButton> createState() => _AddPriorityButtonState();
@@ -28,10 +31,9 @@ class _AddPriorityButtonState extends State<AddPriorityButton> {
                 List.generate(3, (int index) {
                   final labels = ["Rendah", "Sedang", "Tinggi"];
                   final colors = [
-                    MyColors.lowPriority, 
-                    MyColors
-                        .mediumPriority, 
-                    MyColors.highPriority, 
+                    MyColors.lowPriority,
+                    MyColors.mediumPriority,
+                    MyColors.highPriority,
                   ];
 
                   final priorityValue = index + 1;
